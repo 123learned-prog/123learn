@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { QuizGerado } from "@/lib/types";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 export async function POST(req: NextRequest) {
   const { texto, quantidade, idioma, nivel } = await req.json();
@@ -44,18 +45,10 @@ Responda APENAS com um JSON válido, sem markdown, sem texto antes ou depois, no
 }`;
 
   try {
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-5",
-      max_tokens: 8000,
-      messages: [{ role: "user", content: prompt }],
-    });
+    const result = await model.generateContent(prompt);
+    const texto_resposta = result.response.text();
 
-    const textBlock = message.content.find((b) => b.type === "text");
-    if (!textBlock || textBlock.type !== "text") {
-      throw new Error("Resposta sem texto");
-    }
-
-    const limpo = textBlock.text.replace(/```json|```/g, "").trim();
+    const limpo = texto_resposta.replace(/```json|```/g, "").trim();
     const quiz: QuizGerado = JSON.parse(limpo);
 
     return NextResponse.json(quiz);
