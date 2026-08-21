@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-paper text-graphite font-body;
+}
+
+::selection {
+  background-color: #e4a33d55;
+}
+
+.focus-ring {
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-board focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
+}
