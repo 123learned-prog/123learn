@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { QuizGerado, RespostaAluno, ResultadoCorrecao, AlunoInfo } from "@/lib/types";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 // Cliente Supabase "service role" — só usado no servidor, nunca no browser.
 const supabaseAdmin = createClient(
